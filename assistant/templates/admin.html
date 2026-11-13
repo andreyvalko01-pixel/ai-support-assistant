@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <title>Асистент — панель</title>
+  <style>
+    body { margin: 0; font: 14px/1.45 system-ui, sans-serif; background: #f6f7f9; color: #111827; }
+    header { padding: 14px 28px; background: #14532d; color: #fff; display: flex; gap: 14px; align-items: center; }
+    header h1 { margin: 0; font-size: 18px; }
+    header span { background: rgba(255,255,255,.15); border-radius: 99px; padding: 2px 10px; font-size: 12px; }
+    main { display: grid; grid-template-columns: 1.1fr 1fr; gap: 20px; padding: 22px 28px; }
+    section { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 18px; }
+    h2 { margin: 0 0 12px; font-size: 15px; }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; grid-column: 1 / -1; }
+    .stat { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px 16px; }
+    .stat b { display: block; font-size: 22px; }
+    .stat span { color: #6b7280; font-size: 13px; }
+    table { width: 100%; border-collapse: collapse; }
+    td, th { padding: 7px 4px; border-bottom: 1px solid #f0f0f0; text-align: left; vertical-align: top; }
+    th { font-size: 12px; color: #6b7280; }
+    .bar { height: 6px; background: #bbf7d0; border-radius: 3px; }
+    input, textarea { width: 100%; box-sizing: border-box; padding: 8px 10px; border: 1px solid #d1d5db; border-radius: 8px; font: inherit; margin-bottom: 8px; }
+    textarea { min-height: 150px; }
+    button { border: 0; background: #16a34a; color: #fff; padding: 8px 14px; border-radius: 8px; cursor: pointer; }
+    .link { background: none; color: #2563eb; padding: 0; }
+    .danger { background: none; color: #b91c1c; padding: 0; }
+    a { color: #2563eb; }
+    small { color: #6b7280; }
+  </style>
+</head>
+<body>
+  <header><h1>AI-асистент підтримки</h1><span>режим: {{ mode }}</span></header>
+  <main>
+    <div class="stats">
+      <div class="stat"><b>{{ total }}</b><span>питань від клієнтів</span></div>
+      <div class="stat"><b>{{ intents.get("faq", 0) }}</b><span>відповідей з бази знань</span></div>
+      <div class="stat"><b>{{ intents.get("order_status", 0) + intents.get("return", 0) }}</b><span>замовлень і повернень</span></div>
+      <div class="stat"><b>{{ intents.get("handoff", 0) }}</b><span>передано оператору</span></div>
+    </div>
+
+    <section>
+      <h2>Найчастіші питання</h2>
+      <table>
+        {% set top = top_questions[0][1] if top_questions else 1 %}
+        {% for q, n in top_questions %}
+        <tr><td>{{ q }}<div class="bar" style="width: {{ (n / top * 100) | round }}%"></div></td><td>{{ n }}</td></tr>
+        {% else %}<tr><td>Поки порожньо</td></tr>{% endfor %}
+      </table>
+
+      <h2 style="margin-top:22px">Чекають оператора</h2>
+      <table>
+        {% for t in tickets %}
+        <tr>
+          <td>{{ t.question }}<br><small>{{ t.channel }} · {{ t.created_at.strftime("%d.%m %H:%M") }}</small></td>
+          <td><form method="post" action="/admin/tickets/{{ t.id }}/close"><button class="link">закрити</button></form></td>
+        </tr>
+        {% else %}<tr><td><small>Немає відкритих звернень</small></td></tr>{% endfor %}
+      </table>
+    </section>
+
+    <section>
+      <h2>База знань ({{ docs | length }})</h2>
+      <table>
+        <tr><th>Стаття</th><th>Оновлено</th><th></th></tr>
+        {% for d in docs %}
+        <tr>
+          <td><a href="?edit={{ d.id }}">{{ d.title }}</a></td>
+          <td><small>{{ d.updated_at.strftime("%d.%m.%Y") }}</small></td>
+          <td><form method="post" action="/admin/docs/{{ d.id }}/delete" onsubmit="return confirm('Видалити статтю?')"><button class="danger">×</button></form></td>
+        </tr>
+        {% endfor %}
+      </table>
+
+      <h2 style="margin-top:18px">{{ "Редагувати статтю" if editing else "Нова стаття" }}</h2>
+      <form method="post" action="/admin/docs">
+        {% if editing %}<input type="hidden" name="doc_id" value="{{ editing.id }}">{% endif %}
+        <input name="title" placeholder="Заголовок" value="{{ editing.title if editing else '' }}" required>
+        <input name="url" placeholder="Посилання на сторінку сайту (необов'язково)" value="{{ editing.url or '' if editing else '' }}">
+        <textarea name="content" placeholder="Текст статті. Абзаци розділяйте порожнім рядком." required>{{ editing.content if editing else '' }}</textarea>
+        <button>Зберегти і переіндексувати</button>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

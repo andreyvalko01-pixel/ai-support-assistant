@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ZooMarket — демо віджета підтримки</title>
+  <style>
+    body { margin: 0; font: 15px/1.5 system-ui, sans-serif; color: #1f2937; background: #fff; }
+    header { display: flex; align-items: center; gap: 28px; padding: 18px 40px; border-bottom: 1px solid #eee; }
+    header b { font-size: 22px; color: #16a34a; }
+    header nav { display: flex; gap: 22px; color: #4b5563; }
+    .hero { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; padding: 50px 40px; background: #f0fdf4; }
+    .hero h1 { font-size: 40px; margin: 0 0 12px; }
+    .hero img { width: 100%; height: 340px; object-fit: cover; border-radius: 18px; }
+    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; padding: 40px; }
+    .card { border: 1px solid #eee; border-radius: 14px; padding: 14px; }
+    .card img { width: 100%; height: 150px; object-fit: cover; border-radius: 10px; }
+    .card b { display: block; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <header><b>ZooMarket</b><nav><span>Корм</span><span>Іграшки</span><span>Аптека</span><span>Доставка і оплата</span></nav></header>
+  <section class="hero">
+    <div>
+      <h1>Усе для ваших улюбленців</h1>
+      <p>Доставка по Україні за 1–2 дні. Безкоштовно від 1 000 грн.</p>
+    </div>
+    <img src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=900&q=70&fit=crop" alt="">
+  </section>
+  <section class="grid">
+    <div class="card"><img src="https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=500&q=70&fit=crop" alt=""><b>Сухий корм для собак 12 кг</b>1 849 ₴</div>
+    <div class="card"><img src="https://images.unsplash.com/photo-1592194996308-7b43878e84a6?w=500&q=70&fit=crop" alt=""><b>Корм для котів 2 кг</b>539 ₴</div>
+    <div class="card"><img src="https://images.unsplash.com/photo-1601758124510-52d02ddb7cbd?w=500&q=70&fit=crop" alt=""><b>Лежак для собак</b>899 ₴</div>
+    <div class="card"><img src="https://images.unsplash.com/photo-1545249390-6bdfa286032f?w=500&q=70&fit=crop" alt=""><b>Іграшка-канат</b>149 ₴</div>
+  </section>
+  <script src="/static/widget.js" defer></script>
+</body>
+</html>
